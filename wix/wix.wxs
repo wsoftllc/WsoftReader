@@ -1,0 +1,106 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="1698757B-C049-4B2C-B2E7-E395B4639930" UpgradeCode="7AB48E4C-A541-4F6F-879E-35AC97B07A9E" Version="1.0.0.0" Language="1033" Name="WSoft Reader" Manufacturer="Wsoft LLC">
+    <Package InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" Compressed="yes" Manufacturer="Wsoft LLC" />
+    <Media EmbedCab="yes" Cabinet="media1.cab" Id="1" />
+    <Icon Id="MyIcon" SourceFile="..\..\..\..\Downloads\icon.ico" />
+    <WixVariable Id="WixUIDialogBmp" Value="Bigback.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="..\..\..\..\Downloads\mit.rtf" />
+    <Property Id="ARPPRODUCTICON" Value="MyIcon" />
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="MenuAppFolder" Name="TheAppName" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="MyAppFolder" Name="WSoft Reader" />
+      </Directory>
+    </Directory>
+
+    <!-- Component Groups for Removal and Features -->
+    <ComponentGroup Id="RemoveFolders">
+      <ComponentRef Id="Remove.MenuAppFolder" />
+      <ComponentRef Id="Remove.ProgramFiles64Folder" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="kakalakaboom">
+      <ComponentRef Id="CId47AF3CBA" />
+      <ComponentRef Id="CIdB1F696EC" />
+      <ComponentRef Id="CId3C7853D5" />
+    </ComponentGroup>
+
+    <Feature Id="ProductFeature" Title="CLI" Description="CLI Plus Full App">
+      <ComponentGroupRef Id="RemoveFolders" />
+      <ComponentGroupRef Id="kakalakaboom" />
+      <!-- Added Component References -->
+      <ComponentRef Id="CSCId6A451520" />
+      <ComponentRef Id="CSCIdC54384CB" />
+    </Feature>
+
+    <Feature Id="GUIFeature" Title="GUI" Description="The GUI">
+      <ComponentGroupRef Id="RemoveFolders" />
+      <ComponentGroupRef Id="kakalakaboom" />
+      <!-- Added Component References -->
+      <ComponentRef Id="CSCId6A451520" />
+      <ComponentRef Id="CSCIdC54384CB" />
+    </Feature>
+
+    <UIRef Id="WixUI_FeatureTree" />
+
+    <!-- Directory and Components -->
+    <DirectoryRef Id="ProgramFiles64Folder">
+      <Component Id="Remove.ProgramFiles64Folder" Guid="34C6DA78-D07E-4A93-918F-1C7C3930531A">
+        <RemoveFolder Id="ProgramFiles64Folder" On="uninstall" />
+        <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="MyAppFolder">
+      <Component Id="CId3C7853D5" Guid="284BFB1F-0955-4016-B511-4AE562311FF8" Win64="no">
+        <File Id="FId3682F3A4" Name="icon.png" Source="C:\Users\zohan\OneDrive\Desktop\wspdf\dist\" />
+        <CreateFolder />
+      </Component>
+      <Component Id="CIdB1F696EC" Guid="995E0ED7-8008-4A14-9FCF-365503281823" Win64="no">
+        <File Id="FIdBA41C913" Name="wpdf.exe" Source="C:\Users\zohan\OneDrive\Desktop\wspdf\dist\" />
+        <CreateFolder />
+      </Component>
+      <Component Id="CId47AF3CBA" Guid="B2F3AA59-6C69-4F0A-A21F-52E366F0813D" Win64="no">
+        <File Id="FIdF24B95A8" Name="wspdf.exe" Source="C:\Users\zohan\OneDrive\Desktop\wspdf\dist\" />
+        <CreateFolder />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Shortcuts and Registry Entries -->
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="CSCId6A451520" Guid="93A4D3EC-2AF9-4B54-AC77-D3DDB6BEC5EE">
+        <Shortcut Id="SId05DB2B37" Name="Wsoft" Target="[!FIdF24B95A8]" WorkingDirectory="MyAppFolder" Icon="MyIcon" />
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RemoveFolder Id="CSCId6A451520" Directory="ProgramMenuFolder" On="uninstall" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="MenuAppFolder">
+      <Component Id="Remove.MenuAppFolder" Guid="816902B7-D495-4017-A63D-D78F25CDE9F3">
+        <RemoveFolder Id="MenuAppFolder" On="uninstall" />
+        <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="CSCIdC54384CB" Guid="1158BFC6-9077-4E2E-8212-5305117DA6F4">
+        <Shortcut Id="SId5C335F91" Name="Wsoft Reader" Description="Reader." Target="[!FIdF24B95A8]" WorkingDirectory="MyAppFolder" Icon="MyIcon" />
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RemoveFolder Id="CSCIdC54384CB" Directory="DesktopFolder" On="uninstall" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Add wpdf.exe to PATH -->
+    <CustomAction Id="AddToPath" Property="PATH" Value="[ProgramFiles64Folder]\WSoft Reader\wpdf.exe" />
+    <InstallExecuteSequence>
+      <Custom Action="AddToPath" After="InstallFiles" />
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
+
